@@ -32,24 +32,21 @@ pip install -r requirements.txt
 
 ### 3. Run the Pipeline
 
-Run the main script:
+**Standard Inference (on `test.csv`)**:
 ```bash
 python main.py
 ```
-This will:
-1. Load books from `data/Books/`.
-2. Chunk them and upload vectors to your Supabase DB.
-3. Read the claims from `data/test.csv`.
-4. Verify each claim.
-5. Save results to `output/submission.csv`.
 
-### 4. Evaluation Pipeline
-To evaluate accuracy using `train.csv`:
+**Evaluation (on `train.csv`)**:
 ```bash
-python evaluate.py --limit 10
+python main.py --mode evaluate --limit 10
 ```
-- `--limit X`: Run only the first X rows (useful for testing).
-- `--reingest`: Force the system to re-read and upload books to Supabase. (Default: Skips ingestion).
+
+**Re-Ingest Books (Pathway)**:
+By default, the script skips ingestion if the DB is ready. To force a refresh:
+```bash
+python main.py --reingest
+```
 
 ---
 ## 🧠 The "Why" - Understanding the Logic
