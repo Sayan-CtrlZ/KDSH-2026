@@ -22,11 +22,19 @@ def main():
     index = VectorIndex()
     
     # 2. Ingest and Index Books
-    print("\n--- Phase 1: Ingestion & Indexing ---")
-    all_chunks = loader.process_all_books()
-    print(f"Total chunks created: {len(all_chunks)}")
+    print("\n--- Phase 1: Ingestion & Indexing (Pathway) ---")
+    # For main pipeline, we assume ingestion is needed or we can verify if empty.
+    # For now, let's just trigger it as per original logic.
+    from src.pathway_pipeline import run_pathway_ingestion
+    db_url = os.environ.get("SUPABASE_DB_URL")
+    if db_url:
+         run_pathway_ingestion(BOOKS_DIR, db_url)
+    else:
+         print("Error: SUPABASE_DB_URL not set.")
+         return
     
-    index.build_indices(all_chunks)
+    # Check if index needs re-init (the VectorIndex class now mainly holds connection)
+    # index = VectorIndex() # already init above
     
     retriever = Retriever(vector_index=index)
     verifier = ConsistencyVerifier()

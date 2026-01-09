@@ -31,11 +31,14 @@ def main():
     
     # 2. Ingest and Index Books (Optional via flag)
     if args.reingest:
-        print("\n--- Phase 1: Ingestion & Indexing ---")
-        loader = BookLoader(books_dir=BOOKS_DIR)
-        all_chunks = loader.process_all_books()
-        print(f"Total chunks found: {len(all_chunks)}")
-        index.build_indices(all_chunks)
+        print("\n--- Phase 1: Ingestion & Indexing (Pathway) ---")
+        from src.pathway_pipeline import run_pathway_ingestion
+        # We need the DB URL here
+        db_url = os.environ.get("SUPABASE_DB_URL")
+        # In this simplistic integration, we run the Pathway pipeline. 
+        # Note: Pathway will run until processed.
+        # Ensure your pathway script finishes or you run it in a way that returns.
+        run_pathway_ingestion(BOOKS_DIR, db_url)
     else:
         print("\n--- Phase 1: Skipped Ingestion (Default) ---")
         print("Use --reingest to force update of vector store.")

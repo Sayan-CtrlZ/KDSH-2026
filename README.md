@@ -68,6 +68,11 @@ python evaluate.py --limit 10
 - Limit: Searching for "felony" might miss "crime".
 - **Vectors**: Capture meaning. "Felony" and "crime" are mathematically close. We use `sentence-transformers` to turn text into numbers.
 
+### Why Pathway?
+**Rationale**: We use **Pathway** for the data ingestion pipeline.
+- It handles reading files, processing streams, and scalable vector computation efficiently.
+- It manages the flow from `data/Books` -> Chunking -> Embedding -> Supabase.
+
 ### Why Supabase (pgvector)?
 **Rationale**: We need a place to store thousands of these vectors.
 - **Supabase** is a PostgreSQL database.
