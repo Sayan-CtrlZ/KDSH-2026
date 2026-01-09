@@ -13,7 +13,8 @@ class InputSchema(pw.Schema):
 # We use a class to load the model once
 class Embedder:
     def __init__(self):
-        self.model = SentenceTransformer('all-MiniLM-L6-v2')
+        model_name = os.environ.get('EMBEDDING_MODEL', 'all-MiniLM-L6-v2')
+        self.model = SentenceTransformer(model_name)
 
     def __call__(self, text):
         return self.model.encode(text).tolist()

@@ -9,7 +9,6 @@ from src.ingestion import BookLoader
 from src.indexing import VectorIndex
 from src.retrieval import Retriever
 from src.reasoning import ConsistencyVerifier
-from src.pathway_pipeline import run_pathway_ingestion
 
 def main():
     # Load environment variables
@@ -39,10 +38,34 @@ def main():
         
     index = VectorIndex(db_url=db_url)
     
-    # 2. Ingestion (Pathway)
+    # 2. Ingestion
+    ingestion_success = False
+    
     if args.reingest:
-        print("\n--- Phase 1: Ingestion & Indexing (Pathway) ---")
-        run_pathway_ingestion(BOOKS_DIR, db_url)
+        print("\n--- Phase 1: Ingestion & Indexing ---")
+        try:
+            # Attempt to use Pathway
+            print("Attempting to use Pathway pipeline...")
+            from src.pathway_pipeline import run_pathway_ingestion
+            run_pathway_ingestion(BOOKS_DIR, db_url)
+            ingestion_success = True
+        except (ImportError, AttributeError, Exception) as e:
+            print(f"\n[WARNING] Pathway ingestion failed or is not supported on this platform: {e}")
+            print("Falling back to standard Python ingestion...")
+            
+            # Fallback to standard ingestion
+            try:
+                loader = BookLoader(books_dir=BOOKS_DIR)
+                all_chunks = loader.process_all_books()
+                print(f"Total chunks found: {len(all_chunks)}")
+                index.build_indices(all_chunks)
+                ingestion_success = True
+            except Exception as e2:
+                print(f"Standard ingestion also failed: {e2}")
+
+        if ingestion_success:
+           print("Ingestion completed successfully.")
+
     else:
         print("\n--- Phase 1: Skipped Ingestion (Default) ---")
         print("Use --reingest to force update of vector store.")

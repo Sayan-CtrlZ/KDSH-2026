@@ -6,7 +6,9 @@ import os
 from psycopg2.extras import execute_values
 
 class VectorIndex:
-    def __init__(self, db_url=None, model_name='all-MiniLM-L6-v2'):
+    def __init__(self, db_url=None, model_name=None):
+        if model_name is None:
+            model_name = os.environ.get('EMBEDDING_MODEL', 'all-MiniLM-L6-v2')
         print(f"Loading embedding model: {model_name}...")
         self.model = SentenceTransformer(model_name)
         self.db_url = db_url or os.environ.get("SUPABASE_DB_URL")
