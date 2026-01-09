@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environment variables
+.env
+
+# Virtual environments
+venv/
+env/
+.venv/
+
+# Project output
+output/
+submission.csv
+
+# IDEs
+.vscode/
+.idea/
+
+# Data (Optional: typically we don't commit large datasets)
+# data/
